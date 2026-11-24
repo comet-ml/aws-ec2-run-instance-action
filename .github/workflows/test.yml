@@ -14,7 +14,7 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - run: |
           npm install
       - run: |
@@ -23,15 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
           role-to-assume: "${{ secrets.AWS_ASSUME_ROLE }}"
           aws-region: "us-east-2"
       - name: Generate SSH Key
         id: ssh-key
-        uses: truemark/generate-ssh-key-action@v2
+        uses: truemark/generate-ssh-key-action@195c7260204d0762c21931c98768d59df44aebd7 # v2
       - name: Setup instance
         id: instance
         uses: ./
@@ -51,20 +51,20 @@ jobs:
             echo "${{ steps.ssh-key.outputs.public-key }}" >> /home/ec2-user/.ssh/authorized_keys
       - name: Wait for instances
         id: ec2-wait
-        uses: truemark/aws-ec2-instance-wait-action@v3
+        uses: truemark/aws-ec2-instance-wait-action@63e4f491e422280589aec3e1ff1f16eafb684afe # v3
         with:
           instance-ids: ${{ steps.instance.outputs.instance-id }}
           region: "us-east-2"
           timeout-ms: "600000"
       - name: Describe Instance
         id: describe-instance
-        uses: truemark/aws-ec2-describe-instance-action@v2
+        uses: truemark/aws-ec2-describe-instance-action@ec85f05098d77efc25df32d79b262cb897da7afc # v2
         with:
           instance-id: ${{ steps.instance.outputs.instance-id }}
           region: "us-east-2"
       - name: SSH Known Hosts
         id: ssh-known-hosts
-        uses: truemark/ssh-known-hosts-action@v1
+        uses: truemark/ssh-known-hosts-action@4915808ab9ba91a3924f61d455ce1d487f0a722a # v1
         with:
           scan-hosts: ${{ steps.describe-instance.outputs.public-dns-name }}
       - name: Validate
